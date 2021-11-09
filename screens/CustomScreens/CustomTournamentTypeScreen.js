@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
-import {tournamentType} from '../../enum/TournamentType';
 
 const NUM_COLUMNS = 2;
 
@@ -47,7 +46,10 @@ export function CustomTournamentTypeScreen({navigation}) {
 
     const flow = [...flowByType[type]];
     const nextScreen = flow.shift();
-    navigation.navigate(nextScreen, {flow});
+    navigation.navigate(nextScreen, {
+      flow,
+      newTournament: {type},
+    });
   };
 
   const renderTypeButton = ({item}) => (

@@ -35,7 +35,7 @@ const matchesMock = [
 const checkMark = require('../../icons/check-mark-blue.png');
 
 export function CustomTournamentMatchesScreen({navigation, route}) {
-  const flow = route?.params.flow;
+  console.log('*****Matches*****');
 
   const [matchesOptions, setMatchesOptions] = useState(matchesMock);
   const [selectedMatches, setSelectedMatches] = useState([]);
@@ -104,9 +104,22 @@ export function CustomTournamentMatchesScreen({navigation, route}) {
   };
 
   const navigateToNextScreen = () => {
+    const flow = route?.params.flow;
+    const newTournament = route?.params.newTournament;
+
     const flowCopy = [...flow];
     const nextScreen = flowCopy.shift();
-    navigation.navigate(nextScreen, {flow: flowCopy});
+
+    // remove checked
+    const newTournamentMatches = selectedMatches.map(match => {
+      const {checked, ...matchWithoutChecked} = match;
+      return matchWithoutChecked;
+    });
+
+    navigation.navigate(nextScreen, {
+      flow: flowCopy,
+      newTournament: {...newTournament, matches: newTournamentMatches},
+    });
   };
 
   return (

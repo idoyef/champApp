@@ -9,9 +9,6 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import TournamentInMotionCard from '../../Components/tournaments/tournamentInMotionCard';
-import {tournamentType} from '../../enum/TournamentType';
-import {currentTournaments} from '../../mocks/tournaments/tournaments';
 
 const friendsMock = [
   {
@@ -35,8 +32,6 @@ const friendsMock = [
 const checkMark = require('../../icons/check-mark-blue.png');
 
 export function CustomTournamentInviteFriendsScreen({navigation, route}) {
-  const flow = route?.params.flow;
-
   const [friendsOptions, setFriendsOptions] = useState(friendsMock);
   const [selectedFriends, setSelectedFriends] = useState([]);
 
@@ -104,9 +99,22 @@ export function CustomTournamentInviteFriendsScreen({navigation, route}) {
   };
 
   const navigateToNextScreen = () => {
+    const flow = route?.params.flow;
+    const newTournament = route?.params.newTournament;
+
     const flowCopy = [...flow];
     const nextScreen = flowCopy.shift();
-    navigation.navigate(nextScreen, {flow: flowCopy});
+
+    // remove checked
+    const newTournamentFriends = selectedFriends.map(friend => {
+      const {checked, ...friendWithoutChecked} = friend;
+      return friendWithoutChecked;
+    });
+
+    navigation.navigate(nextScreen, {
+      flow: flowCopy,
+      newTournament: {...newTournament, friends: newTournamentFriends},
+    });
   };
 
   return (

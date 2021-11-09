@@ -35,7 +35,7 @@ const builtInMock = [
 const checkMark = require('../../icons/check-mark-blue.png');
 
 export function CustomBuiltInTournamentScreen({navigation, route}) {
-  const flow = route?.params.flow;
+  console.log('*****BuiltIn*****');
 
   const [builtInOptions, setBuiltInOptions] = useState(builtInMock);
   const [selectedBuiltIn, setSelectedBuiltIn] = useState([]);
@@ -104,9 +104,22 @@ export function CustomBuiltInTournamentScreen({navigation, route}) {
   };
 
   const navigateToNextScreen = () => {
+    const flow = route?.params.flow;
+    const newTournament = route?.params.newTournament;
+
     const flowCopy = [...flow];
     const nextScreen = flowCopy.shift();
-    navigation.navigate(nextScreen, {flow: flowCopy});
+
+    // remove checked
+    const newTournamentBuiltIn = selectedBuiltIn.map(builtIn => {
+      const {checked, ...builtInWithoutChecked} = builtIn;
+      return builtInWithoutChecked;
+    });
+
+    navigation.navigate(nextScreen, {
+      flow: flowCopy,
+      newTournament: {...newTournament, builtIn: newTournamentBuiltIn},
+    });
   };
 
   return (

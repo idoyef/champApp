@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -34,8 +34,28 @@ const myTournamentCardsMock = [
   },
 ];
 
-export function MyTournamentsScreen({navigation}) {
+export function MyTournamentsScreen({navigation, route}) {
+  const newTournament = route?.params?.newTournament;
+
   const [expanded, setExpanded] = useState(false);
+  const [myTournaments, setMyTournaments] = useState(myTournamentCardsMock);
+
+  useEffect(() => {
+    if (!newTournament) return;
+
+    setMyTournaments([
+      ...myTournaments,
+      {
+        // return from server after saving new tournament
+        id: '4',
+        name: newTournament.name,
+        participantsNumber: newTournament.friends?.length ?? 0,
+        currentPosition: 0,
+        type: tournamentType.Custom,
+      },
+    ]);
+    console.log('newTournamentChanged: ', newTournament);
+  }, [newTournament]);
 
   const expandAddPopup = () => {
     setExpanded(!expanded);
@@ -60,7 +80,7 @@ export function MyTournamentsScreen({navigation}) {
         <View>
           <FlatList
             onPress={() => selectMatch(item)}
-            data={myTournamentCardsMock}
+            data={myTournaments}
             renderItem={renderTournamentCard}
             keyExtractor={item => item.id}
           />
