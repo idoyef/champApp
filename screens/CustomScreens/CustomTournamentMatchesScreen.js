@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {futureScoreGroupsMock} from '../../Components/scoreCards/mocks/scoresMock';
+import SelectedMatchCard from '../../Components/tournaments/selectedMatchCard';
 import {matchStatus} from '../../enum/MatchStatus';
 import {tournamentType} from '../../enum/TournamentType';
 import {currentTournaments} from '../../mocks/tournaments/tournaments';
@@ -37,30 +38,37 @@ export function CustomTournamentMatchesScreen({navigation, route}) {
 
   const handleMatchClicked = useCallback(
     item => {
-      console.log('item', item);
       const matchIndex = selectedMatches.findIndex(
         match => match.id === item.id,
       );
-      console.log('matchIndex*********', matchIndex);
       if (matchIndex === -1) {
-        const x = [...selectedMatches, item];
-        console.log('matchIndex===-1*********', x);
-
         setSelectedMatches([...selectedMatches, item]);
       } else {
         const selectedMatchesCopy = [...selectedMatches];
         selectedMatchesCopy.splice(matchIndex, 1);
         setSelectedMatches(selectedMatchesCopy);
       }
-      console.log('selectedMatches*********', selectedMatches);
+    },
+    [selectedMatches],
+  );
+
+  const removeSelectedMatch = useCallback(
+    id => {
+      console.log('iddddd', id);
+      const matchIndex = selectedMatches.findIndex(match => match.id === id);
+      if (matchIndex !== -1) {
+        console.log('selectedMatchessssssss', selectedMatches);
+
+        const selectedMatchesCopy = [...selectedMatches];
+        selectedMatchesCopy.splice(matchIndex, 1);
+        setSelectedMatches(selectedMatchesCopy);
+      }
     },
     [selectedMatches],
   );
 
   const renderSelectedMatch = ({item}) => (
-    <View>
-      <Text style={{color: '#fff'}}>selected</Text>
-    </View>
+    <SelectedMatchCard match={item} removeMatch={removeSelectedMatch} />
   );
 
   const renderGroupContainerItem = ({item}) => (
@@ -70,8 +78,71 @@ export function CustomTournamentMatchesScreen({navigation, route}) {
     />
   );
 
+  const onSubmit = () => {
+    navigateToNextScreen();
+  };
+
+  const onLaterSubmit = () => {
+    setSelectedMatches([]);
+    navigateToNextScreen();
+  };
+
+  const navigateToNextScreen = () => {
+    const flow = route?.params.flow;
+    const newTournament = route?.params.newTournament;
+
+    const flowCopy = [...flow];
+    const nextScreen = flowCopy.shift();
+
+    // remove checked
+    const newTournamentMatches = selectedMatches.map(match => {
+      const {checked, ...matchWithoutChecked} = match;
+      return matchWithoutChecked;
+    });
+
+    navigation.navigate(nextScreen, {
+      flow: flowCopy,
+      newTournament: {...newTournament, matches: newTournamentMatches},
+    });
+  };
+
   return (
     <View style={styles.matchesContainer}>
+      <View style={styles.matchesInputContainer}>
+        <View style={styles.matchesInput}>
+          <TextInput
+            onChangeText={textEntry => {
+              findMatches(textEntry);
+            }}
+            placeholder={'Find Match'}
+            style={{backgroundColor: 'transparent'}}
+          />
+        </View>
+        <View style={{flex: 1}}>
+          <Button onPress={onSubmit} title="Submit" color="#035690" />
+        </View>
+      </View>
+
+      {selectedMatches.length ? (
+        <>
+          <View
+            style={{
+              height: 30,
+              display: 'flex',
+              justifyContent: 'center',
+            }}>
+            <Text style={{color: '#fff', fontSize: 17, fontWeight: 'bold'}}>
+              Your tournament matches (click to edit):
+            </Text>
+          </View>
+          <FlatList
+            data={selectedMatches}
+            renderItem={renderSelectedMatch}
+            keyExtractor={item => item.id}
+          />
+        </>
+      ) : null}
+
       <View
         style={{
           height: 30,
@@ -82,14 +153,6 @@ export function CustomTournamentMatchesScreen({navigation, route}) {
           Click to add matches:
         </Text>
       </View>
-
-      {selectedMatches.length ? (
-        <FlatList
-          data={selectedMatches}
-          renderItem={renderSelectedMatch}
-          keyExtractor={item => item.id}
-        />
-      ) : null}
 
       <FlatList
         onPress={() => {
@@ -193,20 +256,20 @@ export function CustomTournamentMatchesScreen({navigation, route}) {
 
   // return (
   //   <View>
-  //     <View style={styles.matchesInputContainer}>
-  //       <View style={styles.matchesInput}>
-  //         <TextInput
-  //           onChangeText={textEntry => {
-  //             findMatches(textEntry);
-  //           }}
-  //           placeholder={'Find Match'}
-  //           style={{backgroundColor: 'transparent'}}
-  //         />
-  //       </View>
-  //       <View style={{flex: 1}}>
-  //         <Button onPress={onSubmit} title="Submit" color="#035690" />
-  //       </View>
-  //     </View>
+  // <View style={styles.matchesInputContainer}>
+  //   <View style={styles.matchesInput}>
+  //     <TextInput
+  //       onChangeText={textEntry => {
+  //         findMatches(textEntry);
+  //       }}
+  //       placeholder={'Find Match'}
+  //       style={{backgroundColor: 'transparent'}}
+  //     />
+  //   </View>
+  //   <View style={{flex: 1}}>
+  //     <Button onPress={onSubmit} title="Submit" color="#035690" />
+  //   </View>
+  // </View>
   //     <View style={{marginBottom: 20}}>
   //       <Text
   //         onPress={onLaterSubmit}

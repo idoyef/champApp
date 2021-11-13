@@ -26,13 +26,14 @@ const getStatusToDisplay = (status, time) => {
 };
 
 const ScoreCard = ({
-  match: {id, homeTeam, awayTeam, status, time},
+  match: {id, homeTeam, awayTeam, status, time, startTime},
   onClick,
 }) => (
   <TouchableHighlight
     onPress={() => {
       console.log(onClick);
-      onClick({id, homeTeam, awayTeam, status, time});
+      if (!onClick) return;
+      onClick({id, homeTeam, awayTeam, status, startTime, time});
     }}>
     <View style={styles.matchContainer}>
       <Text style={[styles.whiteText, styles.matchStatus]}>
@@ -45,15 +46,26 @@ const ScoreCard = ({
         </Text>
         <Image source={homeTeam.icon} style={styles.teamImage} />
       </View>
-
       <View style={styles.scoreContainer}>
-        <Text style={[styles.homeScoreText, styles.whiteText]}>
-          {homeTeam.score}
-        </Text>
-        <Text style={styles.whiteText}>-</Text>
-        <Text style={[styles.awayScoreText, styles.whiteText]}>
-          {awayTeam.score}
-        </Text>
+        {status === matchStatus.NotStarted ? (
+          <Text style={{color: '#fff'}}>
+            {startTime.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+              timeStyle: 'short',
+            })}
+          </Text>
+        ) : (
+          <>
+            <Text style={[styles.homeScoreText, styles.whiteText]}>
+              {homeTeam.score}
+            </Text>
+            <Text style={styles.whiteText}>-</Text>
+            <Text style={[styles.awayScoreText, styles.whiteText]}>
+              {awayTeam.score}
+            </Text>
+          </>
+        )}
       </View>
 
       <View style={styles.awayTeamContainer}>
@@ -98,6 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   homeScoreText: {paddingLeft: 20, paddingRight: 10},
   awayScoreText: {paddingLeft: 10, paddingRight: 20},
