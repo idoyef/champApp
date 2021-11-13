@@ -46,7 +46,7 @@ export const futureMatches = [
 ];
 
 export const challengesBySportType = {
-  soccer: [
+  Soccer: [
     {
       type: 'winner',
       options: ['homeTeam', 'awayTeam', 'tie'],

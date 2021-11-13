@@ -1,5 +1,12 @@
 import React from 'react';
-import {SafeAreaView, View, StyleSheet, Text, Image} from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableHighlight,
+} from 'react-native';
 import {matchStatus} from '../../enum/MatchStatus';
 
 const getStatusToDisplay = (status, time) => {
@@ -18,36 +25,45 @@ const getStatusToDisplay = (status, time) => {
   }
 };
 
-const ScoreCard = ({match: {homeTeam, awayTeam, status, time}}) => (
-  <View style={styles.matchContainer}>
-    <Text style={[styles.whiteText, styles.matchStatus]}>
-      {getStatusToDisplay(status, time)}
-    </Text>
+const ScoreCard = ({
+  match: {id, homeTeam, awayTeam, status, time},
+  onClick,
+}) => (
+  <TouchableHighlight
+    onPress={() => {
+      console.log(onClick);
+      onClick({id, homeTeam, awayTeam, status, time});
+    }}>
+    <View style={styles.matchContainer}>
+      <Text style={[styles.whiteText, styles.matchStatus]}>
+        {getStatusToDisplay(status, time)}
+      </Text>
 
-    <View style={styles.homeTeamContainer}>
-      <Text style={[styles.whiteText, styles.homeTeamText]}>
-        {homeTeam.name}
-      </Text>
-      <Image source={homeTeam.icon} style={styles.teamImage} />
-    </View>
+      <View style={styles.homeTeamContainer}>
+        <Text style={[styles.whiteText, styles.homeTeamText]}>
+          {homeTeam.name}
+        </Text>
+        <Image source={homeTeam.icon} style={styles.teamImage} />
+      </View>
 
-    <View style={styles.scoreContainer}>
-      <Text style={[styles.homeScoreText, styles.whiteText]}>
-        {homeTeam.score}
-      </Text>
-      <Text style={styles.whiteText}>-</Text>
-      <Text style={[styles.awayScoreText, styles.whiteText]}>
-        {awayTeam.score}
-      </Text>
-    </View>
+      <View style={styles.scoreContainer}>
+        <Text style={[styles.homeScoreText, styles.whiteText]}>
+          {homeTeam.score}
+        </Text>
+        <Text style={styles.whiteText}>-</Text>
+        <Text style={[styles.awayScoreText, styles.whiteText]}>
+          {awayTeam.score}
+        </Text>
+      </View>
 
-    <View style={styles.awayTeamContainer}>
-      <Image source={awayTeam.icon} style={styles.teamImage} />
-      <Text style={[styles.whiteText, styles.awayTeamText]}>
-        {awayTeam.name}
-      </Text>
+      <View style={styles.awayTeamContainer}>
+        <Image source={awayTeam.icon} style={styles.teamImage} />
+        <Text style={[styles.whiteText, styles.awayTeamText]}>
+          {awayTeam.name}
+        </Text>
+      </View>
     </View>
-  </View>
+  </TouchableHighlight>
 );
 
 const styles = StyleSheet.create({

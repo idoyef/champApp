@@ -3,8 +3,10 @@ import {View, FlatList, StyleSheet} from 'react-native';
 import ScoreCard from './scoreCard';
 import ScoreCardGroupTitle from './scoreCardGroupTitle';
 
-const ScoreCardGroup = ({scoreGroup}) => {
-  const renderItem = ({item}) => <ScoreCard match={item} />;
+const ScoreCardGroup = ({scoreGroup, onItemClicked}) => {
+  const renderItem = ({item}) => (
+    <ScoreCard match={item} onClick={onItemClicked} />
+  );
 
   return (
     <View style={styles.scoreCardGroupContainer}>

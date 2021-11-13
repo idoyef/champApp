@@ -3,8 +3,10 @@ import {View, FlatList} from 'react-native';
 import ScoreCardGroup from '../Components/scoreCards/scoreCardGroup';
 import ScoreCardGroupDate from '../Components/scoreCards/scoreCardGroupDate';
 
-export function ScoreCardGroupContainer({scoreCardGroupData}) {
-  const renderGroupItem = ({item}) => <ScoreCardGroup scoreGroup={item} />;
+export function ScoreCardGroupContainer({scoreCardGroupData, onItemClicked}) {
+  const renderGroupItem = ({item}) => (
+    <ScoreCardGroup scoreGroup={item} onItemClicked={onItemClicked} />
+  );
 
   return (
     <View>
